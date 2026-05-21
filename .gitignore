@@ -1,0 +1,12 @@
+# Ignorar dependencias
+node_modules/
+vendor/
+
+# Ignorar archivos de configuración local o secretos
+.env
+config.json
+
+# Ignorar archivos compilados o de sistema operativo
+*.log
+*.pyc
+.DS_Store
