@@ -1,0 +1,14 @@
+const express = require('express');
+const router = express.Router();
+const { upload, cargarEstudiantes, cargarProyectos, descargarResultados } = require('../controllers/adminController');
+
+// POST /api/admin/cargar-estudiantes
+router.post('/cargar-estudiantes', upload.single('archivo'), cargarEstudiantes);
+
+// POST /api/admin/cargar-proyectos
+router.post('/cargar-proyectos', upload.single('archivo'), cargarProyectos);
+
+// GET /api/admin/descargar-resultados
+router.get('/descargar-resultados', descargarResultados);
+
+module.exports = router;

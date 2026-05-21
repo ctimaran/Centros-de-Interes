@@ -18,12 +18,14 @@ const proyectosRoutes = require('./src/routes/proyectosRoutes');
 const inscripcionRoutes = require('./src/routes/inscripcionRoutes');
 const estudianteRoutes = require('./src/routes/estudianteRoutes');
 const cancelarInscripcionRoutes = require('./src/routes/cancelarInscripcionRoutes');
+const adminRoutes = require('./src/routes/adminRoutes');
 
 // Endpoints de la API REST
 app.use('/api/proyectos', proyectosRoutes);
 app.use('/api/inscripcion', inscripcionRoutes);
 app.use('/api/estudiante', estudianteRoutes);
 app.use('/api/cancelar-inscripcion', cancelarInscripcionRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.get('/api/status', (req, res) => {
     res.json({ 
