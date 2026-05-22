@@ -27,7 +27,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h2>¡Estás Inscrito!</h2>
                 <p><strong>Estudiante:</strong> <span id="status-name"></span> (<span id="status-grade"></span>)</p>
                 <p><strong>Centro de Interés:</strong> <span id="status-project"></span></p>
-                <button class="btn-cancel" id="btn-cancelar">Liberar mi cupo</button>
+                <div class="status-actions">
+                    <button class="btn-cancel" id="btn-cancelar">Liberar mi cupo</button>
+                    <button class="btn-outline" id="btn-salir">Salir</button>
+                </div>
             </div>
         `
     };
@@ -59,6 +62,10 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('status-grade').textContent = currentStudent.grado;
             document.getElementById('status-project').textContent = currentStudent.proyecto_nombre;
             document.getElementById('btn-cancelar').addEventListener('click', handleCancel);
+            document.getElementById('btn-salir').addEventListener('click', () => {
+                currentStudent = null;
+                render('login');
+            });
         }
     };
 
