@@ -1,10 +1,16 @@
 const pool = require('../config/db');
 
 const getProyectos = async (req, res) => {
+    const grado = req.params.grado;
+    
+    if (!grado) {
+        return res.status(400).json({ error: 'El grado del estudiante es requerido' });
+    }
+
     try {
-        // Retornamos los proyectos. El frontend puede filtrar los que tienen cupos_disponibles > 0 si es necesario, 
-        // o podemos filtrarlo directamente aquí según la regla de negocio.
-        const [proyectos] = await pool.query('SELECT * FROM proyectos WHERE cupos_disponibles > 0');
+        // Retornamos los proyectos. Utilizamos FIND_IN_SET para buscar el grado dentro del campo asignacion.
+        const query = 'SELECT * FROM proyectos WHERE FIND_IN_SET(?, asignacion) > 0 AND cupos_disponibles > 0';
+        const [proyectos] = await pool.query(query, [grado]);
         
         res.json({
             status: 'success',

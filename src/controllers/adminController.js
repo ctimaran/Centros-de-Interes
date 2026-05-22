@@ -32,11 +32,12 @@ const cargarEstudiantes = async (req, res) => {
                     const documento = row.documento_identidad;
                     const nombre = row.nombre;
                     const grado = row.grado;
+                    const curso = row.curso || null; // Capturamos el curso
 
                     if (documento && nombre && grado) {
                         await connection.query(
-                            'INSERT INTO estudiantes (documento, nombre, grado) VALUES (?, ?, ?)',
-                            [documento, nombre, grado]
+                            'INSERT INTO estudiantes (documento, nombre, grado, curso) VALUES (?, ?, ?, ?)',
+                            [documento, nombre, grado, curso]
                         );
                     }
                 }
@@ -79,12 +80,13 @@ const cargarProyectos = async (req, res) => {
                     const nombre = row.nombre;
                     const descripcion = row.descripcion || null;
                     const area = row.area || null;
+                    const asignacion = row.asignacion || null; // Capturamos la asignación (ej. "9,10,11")
                     const cupos_totales = parseInt(row.cupos_totales, 10);
 
                     if (id && nombre && !isNaN(cupos_totales)) {
                         await connection.query(
-                            'INSERT INTO proyectos (id, nombre, descripcion, area, cupos_totales, cupos_disponibles) VALUES (?, ?, ?, ?, ?, ?)',
-                            [id, nombre, descripcion, area, cupos_totales, cupos_totales] // Inicializamos disponibles = totales
+                            'INSERT INTO proyectos (id, nombre, descripcion, area, asignacion, cupos_totales, cupos_disponibles) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                            [id, nombre, descripcion, area, asignacion, cupos_totales, cupos_totales] // Inicializamos disponibles = totales
                         );
                     }
                 }

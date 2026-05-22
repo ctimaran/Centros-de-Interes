@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Cargar y Renderizar Proyectos
     const loadProjects = async () => {
         try {
-            const response = await fetch('/api/proyectos');
+            const response = await fetch(`/api/proyectos/${currentStudent.grado}`);
             const data = await response.json();
 
             if (!response.ok) {
