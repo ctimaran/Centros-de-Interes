@@ -34,6 +34,12 @@ header {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+.escudo {
+    max-width: 100px;
+    height: auto;
+    margin-bottom: 1rem;
+}
+
 main {
     padding: 2rem 1rem;
     max-width: 900px;
