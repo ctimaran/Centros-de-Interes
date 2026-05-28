@@ -120,8 +120,10 @@ document.addEventListener('DOMContentLoaded', () => {
             projectsGrid.innerHTML = '';
 
             data.data.forEach(project => {
-                const cuposAgotados = project.cupos_disponibles === 0;
-                const limiteCursoAlcanzado = project.inscritos_del_curso >= project.max_por_curso;
+                let cuposGrupo = Math.max(0, project.max_por_curso - project.inscritos_del_curso);
+                
+                const cuposAgotados = project.cupos_disponibles <= 0;
+                const limiteCursoAlcanzado = cuposGrupo <= 0;
                 const isAvailable = !cuposAgotados && !limiteCursoAlcanzado;
                 
                 const card = document.createElement('div');
@@ -147,7 +149,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="area-badge">${project.area || 'General'}</span>
                         <h3>${project.nombre}</h3>
                         <p class="description">${project.descripcion}</p>
-                        <p class="cupos">Cupos disponibles: ${project.cupos_disponibles} / ${project.cupos_totales}</p>
+                        <p class="cupos">📦 Cupos totales en el colegio: ${project.cupos_disponibles}</p>
+                        <p class="cupos">👥 Cupos para tu grupo: ${cuposGrupo}</p>
                     </div>
                     ${actionHtml}
                 `;
