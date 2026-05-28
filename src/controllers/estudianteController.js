@@ -5,7 +5,7 @@ const getEstudiante = async (req, res) => {
 
     try {
         const query = `
-            SELECT e.documento, e.nombre, e.grado, e.proyecto_id, 
+            SELECT e.documento, e.nombre, e.grado, e.curso, e.proyecto_id, 
                    p.nombre as proyecto_nombre, p.descripcion as proyecto_descripcion, p.area as proyecto_area
             FROM estudiantes e 
             LEFT JOIN proyectos p ON e.proyecto_id = p.id 
@@ -25,6 +25,7 @@ const getEstudiante = async (req, res) => {
                 documento: estudiante.documento,
                 nombre: estudiante.nombre,
                 grado: estudiante.grado,
+                curso: estudiante.curso,
                 proyecto_id: estudiante.proyecto_id,
                 proyecto_nombre: estudiante.proyecto_nombre || null,
                 proyecto_descripcion: estudiante.proyecto_descripcion || null,

@@ -13,7 +13,7 @@ const getProyectos = async (req, res) => {
             SELECT p.*, 
                    (SELECT COUNT(*) FROM estudiantes e WHERE e.proyecto_id = p.id AND e.curso = ?) AS inscritos_del_curso
             FROM proyectos p 
-            WHERE FIND_IN_SET(?, p.asignacion) > 0
+            WHERE FIND_IN_SET(?, p.asignacion) > 0  ORDER BY inscritos_del_curso ASC, p.cupos_disponibles DESC
         `;
         const [proyectos] = await pool.query(query, [curso, grado]);
         

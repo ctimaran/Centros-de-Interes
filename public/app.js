@@ -111,6 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`/api/proyectos/${currentStudent.grado}/${currentStudent.curso}`);
             const data = await response.json();
 
+            console.log(currentStudent);
+
             if (!response.ok) {
                 alert('Error al cargar la lista de centros de interés.');
                 return;
@@ -118,9 +120,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const projectsGrid = document.getElementById('projects-grid');
             projectsGrid.innerHTML = '';
-
+            
             data.data.forEach(project => {
-                let cuposGrupo = Math.max(0, project.max_por_curso - project.inscritos_del_curso);
+               // console.log(project);
+                // 1. Blindaje matemático: si no hay inscritos, forzamos un 0
+                const inscritos = project.inscritos_del_curso || 0;
+                let cuposGrupo = Math.max(0, project.max_por_curso - inscritos);
                 
                 const cuposAgotados = project.cupos_disponibles <= 0;
                 const limiteCursoAlcanzado = cuposGrupo <= 0;
@@ -129,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const card = document.createElement('div');
                 card.className = `card ${!isAvailable ? 'disabled' : ''}`;
                 
-                // Aplicamos estilos de deshabilitado si aplica (la clase .disabled usualmente los opaca)
+                // Aplicamos estilos de deshabilitado
                 if (!isAvailable) {
                     card.style.opacity = '0.6';
                     card.style.pointerEvents = 'none';
@@ -144,13 +149,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     actionHtml = `<button onclick="inscribirEstudiante(${project.id}, '${project.nombre}')">Inscribirme</button>`;
                 }
 
+                // 2. Textos claros: Totales y Restantes
                 card.innerHTML = `
                     <div>
                         <span class="area-badge">${project.area || 'General'}</span>
                         <h3>${project.nombre}</h3>
                         <p class="description">${project.descripcion}</p>
-                        <p class="cupos">📦 Cupos totales en el colegio: ${project.cupos_disponibles}</p>
-                        <p class="cupos">👥 Cupos para tu grupo: ${cuposGrupo}</p>
+                        
+                        <hr style="border: 0; border-top: 1px solid #ddd; margin: 12px 0;">
+                        
+                        <p class="cupos">📦 Cupos totales disponibles: <strong>${project.cupos_disponibles}</strong> de ${project.cupos_totales}</p>
+                        <p class="cupos">👥 Cupos restantes para tu grupo: <strong>${cuposGrupo}</strong> de ${project.max_por_curso}</p>
                     </div>
                     ${actionHtml}
                 `;
