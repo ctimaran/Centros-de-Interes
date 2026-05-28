@@ -82,11 +82,12 @@ const cargarProyectos = async (req, res) => {
                     const area = row.area || null;
                     const asignacion = row.asignacion || null; // Capturamos la asignación (ej. "9,10,11")
                     const cupos_totales = parseInt(row.cupos_totales, 10);
+                    const max_por_curso = parseInt(row.max_por_curso, 10) || cupos_totales;
 
                     if (id && nombre && !isNaN(cupos_totales)) {
                         await connection.query(
-                            'INSERT INTO proyectos (id, nombre, descripcion, area, asignacion, cupos_totales, cupos_disponibles) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                            [id, nombre, descripcion, area, asignacion, cupos_totales, cupos_totales] // Inicializamos disponibles = totales
+                            'INSERT INTO proyectos (id, nombre, descripcion, area, asignacion, cupos_totales, cupos_disponibles, max_por_curso) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                            [id, nombre, descripcion, area, asignacion, cupos_totales, cupos_totales, max_por_curso] // Inicializamos disponibles = totales
                         );
                     }
                 }

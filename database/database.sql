@@ -9,7 +9,8 @@ CREATE TABLE proyectos (
     area VARCHAR(100),
     asignacion VARCHAR(100), -- Grados permitidos separados por comas (ej: "9,10,11")
     cupos_totales INT NOT NULL,
-    cupos_disponibles INT NOT NULL
+    cupos_disponibles INT NOT NULL,
+    max_por_curso INT NOT NULL
 );
 
 -- Tabla de estudiantes
@@ -23,10 +24,10 @@ CREATE TABLE estudiantes (
 );
 
 -- Datos de prueba para Proyectos
-INSERT INTO proyectos (nombre, descripcion, area, asignacion, cupos_totales, cupos_disponibles) VALUES
-('Robótica', 'Construcción y programación de robots y circuitos básicos.', 'Tecnología', '9,10,11', 15, 15),
-('Arte y Pintura', 'Expresión artística utilizando diferentes técnicas sobre lienzo.', 'Artes', '6,7,8', 20, 20),
-('Programación Web', 'Creación de páginas web y aplicaciones modernas.', 'Tecnología', '10,11', 25, 25);
+INSERT INTO proyectos (nombre, descripcion, area, asignacion, cupos_totales, cupos_disponibles, max_por_curso) VALUES
+('Robótica', 'Construcción y programación de robots y circuitos básicos.', 'Tecnología', '9,10,11', 15, 15, 5),
+('Arte y Pintura', 'Expresión artística utilizando diferentes técnicas sobre lienzo.', 'Artes', '6,7,8', 20, 20, 10),
+('Programación Web', 'Creación de páginas web y aplicaciones modernas.', 'Tecnología', '10,11', 25, 25, 10);
 
 -- Datos de prueba para Estudiantes (Sin proyecto asignado aún)
 INSERT INTO estudiantes (documento, nombre, grado, curso) VALUES

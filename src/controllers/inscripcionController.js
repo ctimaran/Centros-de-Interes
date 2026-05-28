@@ -49,6 +49,17 @@ const inscribirEstudiante = async (req, res) => {
             return res.status(400).json({ error: 'El centro de interés seleccionado ya no tiene cupos disponibles.' });
         }
 
+        // 2.5 Verificar límite por curso
+        const [conteoCurso] = await connection.query(
+            'SELECT COUNT(*) as inscritos FROM estudiantes WHERE proyecto_id = ? AND curso = ? FOR UPDATE',
+            [proyecto_id, estudiante.curso]
+        );
+
+        if (conteoCurso[0].inscritos >= proyecto.max_por_curso) {
+            await connection.rollback();
+            return res.status(400).json({ error: 'Se ha alcanzado el límite máximo de estudiantes para este curso en este centro de interés.' });
+        }
+
         // 3. Registrar la inscripción y restar el cupo disponible
         await connection.query(
             'UPDATE estudiantes SET proyecto_id = ? WHERE documento = ?',

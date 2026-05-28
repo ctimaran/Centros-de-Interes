@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Cargar y Renderizar Proyectos
     const loadProjects = async () => {
         try {
-            const response = await fetch(`/api/proyectos/${currentStudent.grado}`);
+            const response = await fetch(`/api/proyectos/${currentStudent.grado}/${currentStudent.curso}`);
             const data = await response.json();
 
             if (!response.ok) {
@@ -120,14 +120,27 @@ document.addEventListener('DOMContentLoaded', () => {
             projectsGrid.innerHTML = '';
 
             data.data.forEach(project => {
-                const isAvailable = project.cupos_disponibles > 0;
+                const cuposAgotados = project.cupos_disponibles === 0;
+                const limiteCursoAlcanzado = project.inscritos_del_curso >= project.max_por_curso;
+                const isAvailable = !cuposAgotados && !limiteCursoAlcanzado;
+                
                 const card = document.createElement('div');
                 card.className = `card ${!isAvailable ? 'disabled' : ''}`;
                 
-                // Aseguramos que el botón llame a la función global de inscribir
-                const actionHtml = isAvailable 
-                    ? `<button onclick="inscribirEstudiante(${project.id}, '${project.nombre}')">Inscribirme</button>` 
-                    : `<div class="no-cupos">Sin cupos</div>`;
+                // Aplicamos estilos de deshabilitado si aplica (la clase .disabled usualmente los opaca)
+                if (!isAvailable) {
+                    card.style.opacity = '0.6';
+                    card.style.pointerEvents = 'none';
+                }
+
+                let actionHtml = '';
+                if (cuposAgotados) {
+                    actionHtml = `<div class="no-cupos" style="color: #666; font-weight: bold; text-align: center; padding: 0.8rem;">Cupos Agotados</div>`;
+                } else if (limiteCursoAlcanzado) {
+                    actionHtml = `<div class="no-cupos" style="color: #666; font-weight: bold; text-align: center; padding: 0.8rem;">Límite máximo por grupo alcanzado</div>`;
+                } else {
+                    actionHtml = `<button onclick="inscribirEstudiante(${project.id}, '${project.nombre}')">Inscribirme</button>`;
+                }
 
                 card.innerHTML = `
                     <div>
