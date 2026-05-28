@@ -94,4 +94,63 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Error de red al intentar descargar los resultados.');
         }
     });
+
+    const formReiniciarEstudiante = document.getElementById('form-reiniciar-estudiante');
+    const btnReiniciarTodos = document.getElementById('btn-reiniciar-todos');
+
+    // Manejador para reiniciar un estudiante específico
+    formReiniciarEstudiante.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const documento = document.getElementById('doc-estudiante-reinicio').value.trim();
+        if (!documento) return;
+
+        const confirmacion = confirm(`¿Estás seguro que deseas reiniciar la elección del estudiante con documento ${documento}?`);
+        if (!confirmacion) return;
+
+        try {
+            const response = await fetch('/api/admin/reiniciar-estudiante', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ documento_identidad: documento })
+            });
+            const data = await response.json();
+            
+            if (response.ok) {
+                alert(data.message);
+                formReiniciarEstudiante.reset();
+            } else {
+                alert(data.error || 'Error al reiniciar estudiante.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error de red al intentar reiniciar al estudiante.');
+        }
+    });
+
+    // Manejador para reiniciar todos los estudiantes
+    btnReiniciarTodos.addEventListener('click', async () => {
+        const confirmacion1 = confirm('¡ADVERTENCIA DE SEGURIDAD!\n\nEstás a punto de desasignar a TODOS los estudiantes de sus respectivos proyectos y restaurar los cupos globales. Esta acción es destructiva y afectará a todo el sistema.\n\n¿Deseas continuar con el proceso de reinicio masivo?');
+        
+        if (!confirmacion1) return;
+
+        const confirmacion2 = confirm('¿ESTÁS ABSOLUTAMENTE SEGURO?\n\nPor favor, confirma por segunda vez para proceder con el reinicio de todos los estudiantes.');
+
+        if (!confirmacion2) return;
+
+        try {
+            const response = await fetch('/api/admin/reiniciar-todos', {
+                method: 'POST'
+            });
+            const data = await response.json();
+            
+            if (response.ok) {
+                alert(data.message);
+            } else {
+                alert(data.error || 'Error al reiniciar todos los estudiantes.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error de red al intentar reiniciar todos los estudiantes.');
+        }
+    });
 });

@@ -143,9 +143,84 @@ const descargarResultados = async (req, res) => {
     }
 };
 
+const reiniciarEstudiante = async (req, res) => {
+    const { documento_identidad } = req.body;
+    if (!documento_identidad) {
+        return res.status(400).json({ error: 'Falta el documento de identidad.' });
+    }
+
+    const connection = await pool.getConnection();
+    try {
+        await connection.beginTransaction();
+
+        // Verificar si el estudiante existe y tiene proyecto
+        const [estudiantes] = await connection.query(
+            'SELECT proyecto_id FROM estudiantes WHERE documento = ?',
+            [documento_identidad]
+        );
+
+        if (estudiantes.length === 0) {
+            await connection.rollback();
+            return res.status(404).json({ error: 'Estudiante no encontrado.' });
+        }
+
+        const proyectoId = estudiantes[0].proyecto_id;
+
+        if (proyectoId) {
+            // Actualizar estudiante
+            await connection.query(
+                'UPDATE estudiantes SET proyecto_id = NULL WHERE documento = ?',
+                [documento_identidad]
+            );
+
+            // Aumentar cupo
+            await connection.query(
+                'UPDATE proyectos SET cupos_disponibles = cupos_disponibles + 1 WHERE id = ?',
+                [proyectoId]
+            );
+        } else {
+             await connection.rollback();
+             return res.status(400).json({ error: 'El estudiante no tiene ningún proyecto asignado.' });
+        }
+
+        await connection.commit();
+        res.json({ status: 'success', message: 'La elección del estudiante ha sido reiniciada.' });
+    } catch (error) {
+        await connection.rollback();
+        console.error('Error reiniciando estudiante:', error);
+        res.status(500).json({ error: 'Error al reiniciar el estudiante.' });
+    } finally {
+        connection.release();
+    }
+};
+
+const reiniciarTodos = async (req, res) => {
+    const connection = await pool.getConnection();
+    try {
+        await connection.beginTransaction();
+
+        // Resetear estudiantes
+        await connection.query('UPDATE estudiantes SET proyecto_id = NULL');
+
+        // Resetear proyectos
+        await connection.query('UPDATE proyectos SET cupos_disponibles = cupos_totales');
+
+        await connection.commit();
+        res.json({ status: 'success', message: 'Se han reiniciado todas las elecciones exitosamente.' });
+    } catch (error) {
+        await connection.rollback();
+        console.error('Error reiniciando todos:', error);
+        res.status(500).json({ error: 'Error al reiniciar todos los estudiantes.' });
+    } finally {
+        connection.release();
+    }
+};
+
 module.exports = {
     upload,
     cargarEstudiantes,
     cargarProyectos,
-    descargarResultados
+    descargarResultados,
+    reiniciarEstudiante,
+    reiniciarTodos
 };
