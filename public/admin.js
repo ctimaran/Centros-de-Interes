@@ -153,4 +153,24 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Error de red al intentar reiniciar todos los estudiantes.');
         }
     });
+
+    // Manejador para Cerrar Sesión Administrativa
+    const btnLogout = document.getElementById('btn-logout');
+    if (btnLogout) {
+        btnLogout.addEventListener('click', () => {
+            // Enviamos credenciales falsas para forzar al navegador a borrar las credenciales cacheadas de Basic Auth
+            fetch(window.location.href, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Basic ' + btoa('logout:logout')
+                }
+            }).then(() => {
+                // Al recibir el 401, redirigimos inmediatamente a la página de inicio
+                window.location.href = '/';
+            }).catch(() => {
+                // Por si acaso hay un error de red, también redirigimos
+                window.location.href = '/';
+            });
+        });
+    }
 });
