@@ -240,6 +240,7 @@ button:hover {
 .btn-cancel {
     background-color: #6c757d;
     margin-top: 0;
+    display: none;
 }
 
 .btn-cancel:hover {
