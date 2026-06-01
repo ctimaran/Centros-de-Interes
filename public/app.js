@@ -127,6 +127,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const inscritos = project.inscritos_del_curso || 0;
                 let cuposGrupo = Math.max(0, project.max_por_curso - inscritos);
                 
+                cuposGrupo = Math.min(cuposGrupo, project.cupos_disponibles); // No mostrar más cupos de los disponibles
+
                 const cuposAgotados = project.cupos_disponibles <= 0;
                 const limiteCursoAlcanzado = cuposGrupo <= 0;
                 const isAvailable = !cuposAgotados && !limiteCursoAlcanzado;
