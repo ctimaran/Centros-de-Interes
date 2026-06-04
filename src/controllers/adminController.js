@@ -107,7 +107,7 @@ const cargarProyectos = async (req, res) => {
 const descargarResultados = async (req, res) => {
     try {
         const query = `
-            SELECT e.documento, e.nombre, e.grado, p.nombre as proyecto_nombre 
+            SELECT e.documento, e.nombre, e.curso, p.nombre as proyecto_nombre 
             FROM estudiantes e 
             LEFT JOIN proyectos p ON e.proyecto_id = p.id
         `;
@@ -119,7 +119,7 @@ const descargarResultados = async (req, res) => {
         worksheet.columns = [
             { header: 'Documento', key: 'documento', width: 20 },
             { header: 'Nombre', key: 'nombre', width: 30 },
-            { header: 'Grado', key: 'grado', width: 10 },
+            { header: 'Curso', key: 'curso', width: 10 },
             { header: 'Proyecto Elegido', key: 'proyecto_nombre', width: 30 }
         ];
 
@@ -127,7 +127,7 @@ const descargarResultados = async (req, res) => {
             worksheet.addRow({
                 documento: row.documento,
                 nombre: row.nombre,
-                grado: row.grado,
+                curso: row.curso,
                 proyecto_nombre: row.proyecto_nombre || 'Sin asignar'
             });
         });
